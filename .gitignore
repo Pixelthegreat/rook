@@ -1,0 +1,8 @@
+# Build files #
+/build
+/config.mk
+
+# Miscellaneous #
+/notes
+/old
+**.swp
