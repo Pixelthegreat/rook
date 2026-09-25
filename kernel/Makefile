@@ -1,6 +1,8 @@
 include common.mk
 include kernel/arch/$(ARCH)/Makefile
 
+CFLAGS += -DRK_MODULE_NAME=\"kernel\"
+
 CFLAGS += -g -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
 CFLAGS += -Ibuild/include -Ibuild/limine-protocol/include -O0
 
@@ -10,9 +12,13 @@ ASFLAGS += -Ibuild/include
 LDFLAGS += -T kernel/linker.ld -ffreestanding -nostdlib -lgcc
 
 SOURCES += boot.c\
+	   console.c\
+	   device.c\
 	   limine.c\
 	   main.c\
 	   meta.c\
+	   module.c\
+	   tty.c\
 	   util.c
 
 BUILTIN_MODULES += test

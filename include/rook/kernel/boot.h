@@ -2,7 +2,7 @@
 #define ROOK_KERNEL_BOOT_H
 
 #include <rook/core.h>
-#include <rook/meta.h>
+#include <rook/kernel/meta.h>
 
 /*
  * Boot protocol info

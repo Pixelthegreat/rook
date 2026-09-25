@@ -1,4 +1,8 @@
+include common.mk
+
 SUBDIRS += test
+
+include module/arch/$(ARCH)/Makefile
 
 .PHONY: all $(SUBDIRS)
 

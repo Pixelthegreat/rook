@@ -1,6 +1,7 @@
 #ifndef ROOK_UTIL_H
 #define ROOK_UTIL_H
 
+#include <stdarg.h>
 #include <rook/core.h>
 
 /*
@@ -17,5 +18,16 @@ extern int strncmp(const char *s1, const char *s2, size_t n);
 extern char *strcpy(char *restrict dst, const char *restrict src);
 extern char *strchr(const char *s, int c);
 extern char *strrchr(const char *s, int c);
+
+/*
+ * Extended string functions
+ */
+extern void rk_strncpy(char *dst, size_t size, const char *src);
+
+/*
+ * Format string
+ */
+extern int vsnprintf(char *buffer, size_t size, const char *format, va_list args);
+extern int snprintf(char *buffer, size_t size, const char *format, ...);
 
 #endif /* ROOK_UTIL_H */

@@ -1,6 +1,6 @@
 include common.mk
 
-.PHONY: image_limine_x86_64 all kernel module clean run run_limine_x86_64 defconfig
+.PHONY: image_limine_x86_64 all module kernel clean run run_limine_x86_64 defconfig
 
 image_limine_x86_64: pre all
 	@./tools/image_limine_x86_64.sh
@@ -15,6 +15,9 @@ module:
 
 kernel:
 	@$(MAKE) -s -f kernel/Makefile
+
+clean:
+	@rm -r build/obj
 
 run: run_limine_x86_64
 

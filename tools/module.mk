@@ -1,6 +1,8 @@
-ifeq ($(CONFIG_ARCH), x86_64)
+ifeq ($(ARCH), x86_64)
 CFLAGS += -mno-red-zone -mcmodel=kernel
 endif
+
+CFLAGS += -DRK_MODULE_NAME=\"$(NAME)\"
 
 CFLAGS += -c -Iinclude -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
 ASFLAGS += -c -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
