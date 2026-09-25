@@ -4,7 +4,7 @@ include kernel/arch/$(ARCH)/Makefile
 CFLAGS += -DRK_MODULE_NAME=\"kernel\"
 
 CFLAGS += -g -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
-CFLAGS += -Ibuild/include -Ibuild/limine-protocol/include -O0
+CFLAGS += -Ibuild/include -Ibuild/limine-protocol/include -Ibuild/bakey/include -O0
 
 ASFLAGS += -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
 ASFLAGS += -Ibuild/include
@@ -21,9 +21,11 @@ SOURCES += boot.c\
 	   tty.c\
 	   util.c
 
-BUILTIN_MODULES += test
+BUILTIN_MODULES += test\
+		   tty/fbcon
 
 OBJECTS += $(BUILTIN_MODULES:%=build/root/usr/lib/rk/module/%.ko)
+OBJECTS += build/bakey.o
 
 SRCDIR=kernel
 OUTPUT=build/root/boot/kernel

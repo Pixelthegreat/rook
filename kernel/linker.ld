@@ -1,4 +1,4 @@
-#define ARCH x86_64 /* TODO: replace with include */
+#include "build/include/config.h"
 
 ENTRY(_start)
 

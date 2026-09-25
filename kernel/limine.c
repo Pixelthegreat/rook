@@ -1,11 +1,12 @@
 #include <limine.h>
 #include <rook/core.h>
+#include <rook/kernel/util.h>
 #include <rook/kernel/boot.h>
 
 /* protocol metadata */
 static void init(void);
 
-RK_META rk_meta_boot_protocol_t protocol = {
+RK_META rk_boot_protocol_t protocol = {
 	.base.type = RK_META_TYPE_BOOT_PROTOCOL,
 	.base.size = sizeof(protocol),
 	.name = "Limine 3.x",
@@ -70,4 +71,70 @@ REQUEST_END LIMINE_REQUESTS_END_MARKER;
 
 /* initialize boot protocol */
 static void init(void) {
+
+	/* command line */
+	if (executable_cmdline_request.response)
+		rk_strncpy(
+			rk_boot_info.cmdline.value,
+			sizeof(rk_boot_info.cmdline.value),
+			executable_cmdline_request.response->cmdline
+		);
+
+	/* framebuffer */
+	if (framebuffer_request.response &&
+	    framebuffer_request.response->framebuffer_count) {
+
+		struct limine_framebuffer *framebuffer =
+			framebuffer_request.response->framebuffers[0];
+
+		rk_video_framebuffer_attributes_t *attributes =
+				&rk_boot_info.framebuffer.attributes;
+
+		rk_boot_info.framebuffer.virtual = framebuffer->address;
+		rk_boot_info.framebuffer.size =
+			(size_t)framebuffer->pitch *
+			(size_t)framebuffer->height;
+
+		attributes->width = (size_t)framebuffer->width;
+		attributes->height = (size_t)framebuffer->height;
+		attributes->stride = (size_t)framebuffer->pitch;
+		attributes->depth_bits = (size_t)framebuffer->bpp;
+		attributes->depth_bytes = attributes->depth_bits >> 3;
+		attributes->model = RK_VIDEO_MODEL_RGB;
+
+		attributes->rgb.rmask.size = (size_t)framebuffer->red_mask_size;
+		attributes->rgb.rmask.position = (size_t)framebuffer->red_mask_shift;
+
+		attributes->rgb.gmask.size = (size_t)framebuffer->green_mask_size;
+		attributes->rgb.gmask.position = (size_t)framebuffer->green_mask_shift;
+
+		attributes->rgb.bmask.size = (size_t)framebuffer->blue_mask_size;
+		attributes->rgb.bmask.position = (size_t)framebuffer->blue_mask_shift;
+
+		/* try and determine layout */
+		if (framebuffer->red_mask_size == 8 &&
+		    framebuffer->red_mask_shift == 0 &&
+		    framebuffer->green_mask_size == 8 &&
+		    framebuffer->green_mask_shift == 8 &&
+		    framebuffer->blue_mask_size == 8 &&
+		    framebuffer->blue_mask_shift == 16) {
+
+			if (attributes->depth_bytes == 4)
+				attributes->layout = RK_VIDEO_LAYOUT_RGBX32;
+			else if (attributes->depth_bytes == 3)
+				attributes->layout = RK_VIDEO_LAYOUT_RGB24;
+		}
+		else if (framebuffer->red_mask_size == 8 &&
+			 framebuffer->red_mask_shift == 16 &&
+			 framebuffer->green_mask_size == 8 &&
+			 framebuffer->green_mask_shift == 8 &&
+			 framebuffer->blue_mask_size == 8 &&
+			 framebuffer->blue_mask_shift == 0) {
+
+			if (attributes->depth_bytes == 4)
+				attributes->layout = RK_VIDEO_LAYOUT_BGRX32;
+			else if (attributes->depth_bytes == 3)
+				attributes->layout = RK_VIDEO_LAYOUT_BGR24;
+		}
+	}
 }

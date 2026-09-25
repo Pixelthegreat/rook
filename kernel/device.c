@@ -6,10 +6,11 @@
 extern void rk_device_register(
 		rk_device_t *device,
 		const char *name,
+		const char *description,
 		rk_device_class_t *class
 ) {
 	rk_strncpy(device->name, sizeof(device->name), name);
-	device->name[sizeof(device->name)-1] = 0;
+	rk_strncpy(device->description, sizeof(device->description), description);
 
 	device->class = class;
 
@@ -30,6 +31,8 @@ extern rk_device_t *rk_device_reference(rk_device_t *device) {
 
 /* unregister device */
 extern void rk_device_unregister(rk_device_t *device) {
+
+	if (!device->class) return;
 
 	/* TODO: rk_device_bus_remove(); */
 

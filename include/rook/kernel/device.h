@@ -23,6 +23,7 @@ extern rk_device_class_t rk_device_class_bus;
  */
 typedef struct rk_device {
 	char name[32];
+	char description[32];
 	rk_device_class_t *class;
 	struct rk_device *bus;
 	struct rk_device *class_previous, *class_next;
@@ -45,7 +46,11 @@ typedef struct rk_bus_device {
 /*
  * Create device
  */
-extern rk_device_t *rk_device_create(rk_device_class_t *class);
+extern rk_device_t *rk_device_create(
+		const char *name,
+		const char *description,
+		rk_device_class_t *class
+);
 
 /*
  * Register device
@@ -53,6 +58,7 @@ extern rk_device_t *rk_device_create(rk_device_class_t *class);
 extern void rk_device_register(
 		rk_device_t *device,
 		const char *name,
+		const char *description,
 		rk_device_class_t *class
 );
 

@@ -46,9 +46,14 @@ static size_t tty_write(rk_tty_device_t *_, const char *buffer, size_t count) {
 /* initialize module */
 static void module_init(void) {
 
-	rk_device_register(device, "16550 UART", &rk_device_class_tty);
-
 	tty.write = tty_write;
+
+	rk_device_register(
+			device,
+			"ttyS0",
+			"16550 UART",
+			&rk_device_class_tty
+	);
 
 	isa_outb(PORT+FCR, 0);
 	isa_outb(PORT+LCR, 0x80);

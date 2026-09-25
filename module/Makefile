@@ -1,6 +1,7 @@
 include common.mk
 
-SUBDIRS += test
+SUBDIRS += test\
+	   tty/fbcon
 
 include module/arch/$(ARCH)/Makefile
 

@@ -4,7 +4,7 @@
 	.extern arch_main
 
 .section .bss
-.set stack_size, 0x8000
+.set stack_size, 0x20000
 .align 16
 stack: .skip stack_size
 
