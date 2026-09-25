@@ -5,3 +5,4 @@
 set -e
 
 mkdir -pv "$root/boot"
+mkdir -pv "$root/usr/lib/rk"

@@ -25,6 +25,6 @@ typedef struct rk_meta_boot_protocol {
 	rk_meta_t base;
 	char name[32];
 	void (*init)(void);
-} rk_meta_boot_protocol_t;
+} __attribute__((packed)) rk_meta_boot_protocol_t;
 
 #endif /* ROOK_KERNEL_BOOT_H */

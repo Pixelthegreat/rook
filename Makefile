@@ -1,18 +1,19 @@
 include common.mk
 
-.PHONY: image_limine_x86_64 all kernel clean run run_limine_x86_64 defconfig
+.PHONY: image_limine_x86_64 all kernel module clean run run_limine_x86_64 defconfig
 
 image_limine_x86_64: pre all
-	@echo == image_limine_x86_64 ==
 	@./tools/image_limine_x86_64.sh
 
 pre:
 	@./tools/prebuild.sh
 
-all: kernel
+all: module kernel
+
+module:
+	@$(MAKE) -s -f module/Makefile
 
 kernel:
-	@echo == kernel ==
 	@$(MAKE) -s -f kernel/Makefile
 
 run: run_limine_x86_64

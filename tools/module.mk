@@ -1,5 +1,9 @@
-CFLAGS += -c -Iinclude
-ASFLAGS += -c
+ifeq ($(CONFIG_ARCH), x86_64)
+CFLAGS += -mno-red-zone -mcmodel=kernel
+endif
+
+CFLAGS += -c -Iinclude -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
+ASFLAGS += -c -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
 
 C_SOURCES=$(filter %.c,$(SOURCES))
 S_SOURCES=$(filter %.s,$(SOURCES))
@@ -7,21 +11,23 @@ S_SOURCES=$(filter %.s,$(SOURCES))
 C_OBJECTS=$(C_SOURCES:%.c=build/obj/$(SRCDIR)/%.o)
 S_OBJECTS=$(S_SOURCES:%.s=build/obj/$(SRCDIR)/%.o)
 
-.PHONY: all pre clean
+OUTPUT=build/root/usr/lib/rk/$(SRCDIR).ko
+
+.PHONY: all clean
 
 all: $(OUTPUT)
 
 $(OUTPUT): $(C_OBJECTS) $(S_OBJECTS)
 	@echo " LD     $@"
 	@mkdir -pv $(dir $@)
-	@$(CC) -o $@ $(C_OBJECTS) $(S_OBJECTS) $(LDFLAGS)
+	@$(LD) -r -o $@ $(C_OBJECTS) $(S_OBJECTS) $(LDFLAGS)
 
 $(C_OBJECTS): build/obj/%.o: %.c
 	@echo " CC     $<"
 	@mkdir -pv $(dir $@)
 	@$(CC) $(CFLAGS) -o $@ $< -MD -MP -MF $(@:%.o=%.d)
 
-$(S_OBJECTS): build/obj/%.o: %.s
+$(S_OBJECTS): build/obj/%.o: %.c
 	@echo " AS     $<"
 	@mkdir -pv $(dir $@)
 	@$(CC) $(ASFLAGS) -o $@ $< -MD -MP -MF $(@:%.o=%.d)

@@ -1,7 +1,7 @@
 include common.mk
 include kernel/arch/$(ARCH)/Makefile
 
-CFLAGS += -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
+CFLAGS += -g -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
 CFLAGS += -Ibuild/include -Ibuild/limine-protocol/include -O0
 
 ASFLAGS += -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
@@ -15,7 +15,11 @@ SOURCES += boot.c\
 	   meta.c\
 	   util.c
 
+BUILTIN_MODULES += test
+
+OBJECTS += $(BUILTIN_MODULES:%=build/root/usr/lib/rk/module/%.ko)
+
 SRCDIR=kernel
 OUTPUT=build/root/boot/kernel
 
-include tools/program.mk
+include tools/executable.mk

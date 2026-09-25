@@ -6,9 +6,10 @@ extern rk_meta_t _rk_meta_end;
 
 /* get next metadata entry for type */
 extern rk_meta_t *rk_meta_next(rk_meta_t *entry, rk_meta_type_t type) {
+	void *data;
 
-	void *data = (void *)entry + entry->size;
-	if (!data) data = (void *)&_rk_meta_start;
+	if (!entry) data = (void *)&_rk_meta_start;
+	else data = (void *)entry + entry->size;
 
 	void *end = (void *)&_rk_meta_end;
 
