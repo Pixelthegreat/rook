@@ -7,7 +7,7 @@ rk_gdtr_t rk_gdtr;
 rk_tss_t rk_tss;
 
 /* load gdt */
-extern void gdt_load(rk_tss_t *tss) {
+extern void rk_gdt_load(rk_tss_t *tss) {
 
 	if (!tss) tss = &rk_tss;
 

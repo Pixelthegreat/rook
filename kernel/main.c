@@ -34,5 +34,6 @@ extern void main(void) {
 		rk_console_prints(buffer);
 	}
 	rk_console_prints("\n");
-	rk_panic(NULL, "Kernel panic!");
+
+	*(uint64_t *)NULL = 0xff;
 }

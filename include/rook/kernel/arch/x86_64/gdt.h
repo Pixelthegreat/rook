@@ -82,6 +82,6 @@ extern rk_tss_t rk_tss;
 /*
  * Load GDT
  */
-extern void gdt_load(rk_tss_t *tss);
+extern void rk_gdt_load(rk_tss_t *tss);
 
 #endif /* ROOK_KERNEL_ARCH_X86_64_GDT_H */
