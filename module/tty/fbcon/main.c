@@ -12,7 +12,7 @@
 static rk_tty_device_t tty;
 static rk_device_t *device = RK_DEVICE(&tty);
 
-static char write_buffer[4096];
+static char write_buffer[1024];
 static size_t write_buffer_size = 0;
 
 /* vga 9x16 font */
@@ -669,7 +669,7 @@ static void update_display(void) {
 			     y >= context.damage.y + context.damage.height))
 				continue;
 
-			bakey_cell_t *cell = display.cells + (y * display.width) + x;
+			bakey_cell_t *cell = display.cells + position;
 
 			char ch = (char)cell->character;
 			if (cell->character >= 0x7f)
@@ -715,15 +715,17 @@ static void update_display(void) {
 static size_t tty_write(rk_tty_device_t *_, const char *buffer, size_t count) {
 
 	size_t total = count;
+	while (count) {
 
-	while (count && write_buffer_size < sizeof(write_buffer))
-		write_buffer[write_buffer_size++] = buffer[total - (count--)];
+		while (count && write_buffer_size < sizeof(write_buffer))
+			write_buffer[write_buffer_size++] = buffer[total - (count--)];
 
-	if (bakey_update(&context) != BAKEY_RESULT_SUCCESS)
-		rk_log_error("Bakey: %s", bakey_get_error());
+		if (bakey_update(&context) != BAKEY_RESULT_SUCCESS)
+			rk_log_error("Bakey: %s", bakey_get_error());
+	}
 
-	update_display();
-
+	if (context.display_updated)
+		update_display();
 	bakey_reset_damage(&context);
 
 	return total - count;

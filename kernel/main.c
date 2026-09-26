@@ -21,19 +21,4 @@ extern void main(void) {
 			rk_module_init(module);
 	}
 	rk_console_init();
-	rk_console_prints("\n");
-
-	for (size_t i = 0; i < 8; i++) {
-
-		char buffer[256];
-		snprintf(
-			buffer, sizeof(buffer),
-			"  \e[3%zumHello, world!\e[39m   \e[9%zumHello, world!\e[39m\n",
-			i, i
-		);
-		rk_console_prints(buffer);
-	}
-	rk_console_prints("\n");
-
-	*(uint64_t *)NULL = 0xff;
 }
