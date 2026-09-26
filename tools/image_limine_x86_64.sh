@@ -2,6 +2,8 @@
 #
 # Build a x86_64 limine based iso image
 #
+. build/config.sh
+
 set -e
 
 limine_url='https://codeberg.org/Limine/limine'

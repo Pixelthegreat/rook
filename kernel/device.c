@@ -2,6 +2,20 @@
 #include <rook/kernel/util.h>
 #include <rook/kernel/device.h>
 
+/* get device from class by name */
+extern rk_device_t *rk_device_lookup(
+		rk_device_class_t *class,
+		const char *name
+) {
+	rk_device_t *device = class->first;
+	for (; device; device = device->class_next) {
+
+		if (!strcmp(device->name, name))
+			return device;
+	}
+	return NULL;
+}
+
 /* register device */
 extern void rk_device_register(
 		rk_device_t *device,

@@ -3,11 +3,7 @@
 #include <rook/kernel/console.h>
 #include <rook/kernel/boot.h>
 
-rk_boot_info_t rk_boot_info = {
-	.cmdline = {
-		.console = "tty0",
-	},
-};
+rk_boot_info_t rk_boot_info;
 
 /* initialize boot protocol info */
 extern void rk_boot_init(void) {
@@ -53,13 +49,24 @@ extern void rk_boot_init(void) {
 		value[value_size] = 0;
 
 		/* console device */
-		if (!strcmp(key, "console"))
+		if (!strcmp(key, "console") &&
+		    rk_boot_info.cmdline.console_count <
+		    RK_BOOT_CMDLINE_MAX_CONSOLES)
 			rk_strncpy(
-				rk_boot_info.cmdline.console,
-				sizeof(rk_boot_info.cmdline.console),
+				rk_boot_info.cmdline.consoles[
+				rk_boot_info.cmdline.console_count++],
+				sizeof(rk_boot_info.cmdline.consoles[0]),
 				value
 			);
 	}
+
+	if (!rk_boot_info.cmdline.console_count)
+		rk_strncpy(
+			rk_boot_info.cmdline.consoles[
+			rk_boot_info.cmdline.console_count++],
+			sizeof(rk_boot_info.cmdline.consoles[0]),
+			"tty0"
+		);
 
 	/* print info */
 	rk_log_debug(
@@ -75,5 +82,19 @@ extern void rk_boot_init(void) {
 			rk_boot_info.framebuffer.attributes.stride,
 			rk_boot_info.framebuffer.attributes.depth_bits,
 			rk_boot_info.framebuffer.attributes.layout
+		);
+
+	if (rk_boot_info.hhdm.offset)
+		rk_log_debug(
+			"HHDM: offset=%p",
+			(void *)rk_boot_info.hhdm.offset
+		);
+
+	for (size_t i = 0; i < rk_boot_info.memory_map.count; i++)
+		rk_log_debug(
+			"Entry %zu: type=%llu, start=0x%llx, end=0x%llx",
+			i, rk_boot_info.memory_map.entries[i].type,
+			rk_boot_info.memory_map.entries[i].start,
+			rk_boot_info.memory_map.entries[i].end
 		);
 }

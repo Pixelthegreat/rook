@@ -6,8 +6,22 @@
 #include <rook/kernel/meta.h>
 
 /*
+ * Memory map info
+ */
+#define RK_BOOT_MEMORY_MAP_FREE 0
+#define RK_BOOT_MEMORY_MAP_USED 1
+
+typedef struct rk_boot_memory_map {
+	uint64_t type;
+	uint64_t start;
+	uint64_t end;
+} rk_boot_memory_map_t;
+
+/*
  * Boot protocol info
  */
+#define RK_BOOT_CMDLINE_MAX_CONSOLES 4
+
 typedef struct rk_boot_info {
 	struct {
 		char name[32];
@@ -16,7 +30,9 @@ typedef struct rk_boot_info {
 
 	struct {
 		char value[128];
-		char console[32];
+
+		char consoles[RK_BOOT_CMDLINE_MAX_CONSOLES][32];
+		size_t console_count;
 	} cmdline;
 
 	struct {
@@ -25,6 +41,15 @@ typedef struct rk_boot_info {
 		size_t size;
 		rk_video_framebuffer_attributes_t attributes;
 	} framebuffer;
+
+	struct {
+		uint64_t offset;
+	} hhdm;
+
+	struct {
+		rk_boot_memory_map_t *entries;
+		size_t count;
+	} memory_map;
 } rk_boot_info_t;
 
 extern rk_boot_info_t rk_boot_info;

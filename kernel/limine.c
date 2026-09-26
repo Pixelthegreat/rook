@@ -3,6 +3,9 @@
 #include <rook/kernel/util.h>
 #include <rook/kernel/boot.h>
 
+#define MAX_ENTRIES 256
+static rk_boot_memory_map_t memory_map[MAX_ENTRIES];
+
 /* protocol metadata */
 static void init(void);
 
@@ -137,4 +140,41 @@ static void init(void) {
 				attributes->layout = RK_VIDEO_LAYOUT_BGR24;
 		}
 	}
+
+	/* higher-half direct map */
+	if (hhdm_request.response)
+		rk_boot_info.hhdm.offset = hhdm_request.response->offset;
+
+	/* memory map */
+	if (memmap_request.response) {
+
+		rk_boot_info.memory_map.entries = memory_map;
+		for (size_t i = 0; i < memmap_request.response->entry_count; i++) {
+
+			if (i >= MAX_ENTRIES) break;
+
+			struct limine_memmap_entry *entry =
+				memmap_request.response->entries[i];
+
+			memory_map[i].type =
+					(entry->type == LIMINE_MEMMAP_USABLE?
+					 RK_BOOT_MEMORY_MAP_FREE:
+					 RK_BOOT_MEMORY_MAP_USED);
+
+			memory_map[i].start = entry->base;
+			memory_map[i].end = entry->base + entry->length;
+
+			rk_boot_info.memory_map.count++;
+		}
+	}
+
+	/* get physical addresses of memory ranges */
+	if ((uint64_t)rk_boot_info.framebuffer.virtual >=
+	    rk_boot_info.hhdm.offset &&
+	    (uint64_t)rk_boot_info.framebuffer.virtual <
+	    rk_boot_info.hhdm.offset + (1ULL << 32ULL))
+
+		rk_boot_info.framebuffer.physical =
+				rk_boot_info.framebuffer.virtual -
+				rk_boot_info.hhdm.offset;
 }

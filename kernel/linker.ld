@@ -25,7 +25,10 @@ SECTIONS {
 	.text ALIGN(4K) : { *(.text) } :text
 	.rodata ALIGN(4K) : { *(.rodata) } :rodata
 	.data ALIGN(4K) : { *(.data) } :data
-	.bss ALIGN(4K) : { *(.bss) } :data
+	.bss ALIGN(4K) (NOLOAD) : {
+		*(.bss)
+		*(.bigbss)
+	} :data
 
 	.rk_meta ALIGN(4K) : {
 		_rk_meta_start = .;

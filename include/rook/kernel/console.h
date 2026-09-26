@@ -10,6 +10,11 @@
 extern void rk_console_init(void);
 
 /*
+ * Write data to console
+ */
+extern void rk_console_write(const char *buffer, size_t count);
+
+/*
  * Print message to console
  */
 extern void rk_console_prints(const char *message);

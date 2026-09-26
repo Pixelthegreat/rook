@@ -44,6 +44,14 @@ typedef struct rk_bus_device {
 #define RK_BUS_DEVICE(p) ((rk_bus_device_t *)(p))
 
 /*
+ * Get device from class by name
+ */
+extern rk_device_t *rk_device_lookup(
+		rk_device_class_t *class,
+		const char *name
+);
+
+/*
  * Create device
  */
 extern rk_device_t *rk_device_create(

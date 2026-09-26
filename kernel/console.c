@@ -5,7 +5,8 @@
 #include <rook/kernel/tty.h>
 #include <rook/kernel/console.h>
 
-static rk_device_t *device;
+static rk_device_t *devices[RK_BOOT_CMDLINE_MAX_CONSOLES];
+static size_t device_count = 0;
 
 static char buffer_a[1024];
 static char buffer_b[1024];
@@ -32,36 +33,45 @@ static void add_backlog(const char *message) {
 /* initialize console */
 extern void rk_console_init(void) {
 
-	device = rk_device_class_tty.first;
-	for (; device; device = device->class_next) {
+	for (size_t i = 0; i < rk_boot_info.cmdline.console_count; i++) {
 
-		if (!strcmp(rk_boot_info.cmdline.console, device->name))
-			break;
-	}
-	if (!device) {
+		const char *name = rk_boot_info.cmdline.consoles[i];
 
-		device = rk_device_class_tty.first;
-		rk_panic(
-			NULL, "Can't find TTY device '%s'",
-			rk_boot_info.cmdline.console
+		rk_device_t *device = rk_device_lookup(
+				&rk_device_class_tty, name
 		);
+		if (!device) {
+
+			rk_log_error("Can't find TTY device '%s'", name);
+			continue;
+		}
+		devices[device_count++] = device;
 	}
-	rk_tty_device_write(
-			device,
-			backlog,
-			backlog_end
+	if (!device_count) devices[0] = rk_device_class_tty.first;
+
+	rk_console_write(
+		backlog,
+		backlog_end
 	);
+}
+
+/* write data to console */
+extern void rk_console_write(const char *buffer, size_t count) {
+
+	for (size_t i = 0; i < device_count; i++)
+		rk_tty_device_write(
+			devices[i],
+			buffer,
+			count
+		);
 }
 
 /* print message to console */
 extern void rk_console_prints(const char *message) {
 
-	if (!device) return;
-
-	rk_tty_device_write(
-			device,
-			message,
-			strlen(message)
+	rk_console_write(
+		message,
+		strlen(message)
 	);
 }
 
