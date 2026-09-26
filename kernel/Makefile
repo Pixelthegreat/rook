@@ -14,6 +14,7 @@ LDFLAGS += -T kernel/linker.ld -ffreestanding -nostdlib -lgcc
 SOURCES += boot.c\
 	   console.c\
 	   device.c\
+	   heap.c\
 	   limine.c\
 	   main.c\
 	   meta.c\
