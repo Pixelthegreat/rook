@@ -26,7 +26,13 @@ static rk_device_t *device = RK_DEVICE(&tty);
 static void module_init(void);
 static void module_fini(void);
 
-RK_MODULE("uart-16550", RK_MODULE_TYPE_NORMAL, module_init, module_fini);
+RK_MODULE(
+	"uart-16550",
+	RK_MODULE_TYPE_NORMAL,
+	module_init,
+	module_fini,
+	RK_MODULE_PRIORITY_LOW
+);
 
 /* write to tty */
 static void putc_tty(char c) {

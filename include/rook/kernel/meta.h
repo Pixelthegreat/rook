@@ -15,7 +15,7 @@ typedef struct rk_meta {
 	uint32_t type, size;
 } __attribute__((packed)) rk_meta_t;
 
-#define RK_META __attribute__((used, section(".rk_meta"), aligned(1))) volatile
+#define RK_META(...) __attribute__((used, section(".rk_meta" __VA_OPT__(".") #__VA_ARGS__), aligned(1))) volatile
 
 /*
  * Get next metadata entry for type

@@ -19,3 +19,12 @@ extern void rk_spinlock_release(rk_spinlock_t *lock) {
 
 	lock->v = 0;
 }
+
+/* acquire resource */
+extern bool rk_resource_acquire(rk_resource_t *resource) {
+
+	int v = 1;
+	asm volatile("xchgl %0, %1": "+m"(resource->v), "=a"(v));
+
+	return (bool)!v;
+}

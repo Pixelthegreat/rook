@@ -9,7 +9,7 @@ static rk_boot_memory_map_t memory_map[MAX_ENTRIES];
 /* protocol metadata */
 static void init(void);
 
-RK_META rk_boot_protocol_t protocol = {
+RK_META() rk_boot_protocol_t protocol = {
 	.base.type = RK_META_TYPE_BOOT_PROTOCOL,
 	.base.size = sizeof(protocol),
 	.name = "Limine 3.x",
@@ -144,6 +144,10 @@ static void init(void) {
 	/* higher-half direct map */
 	if (hhdm_request.response)
 		rk_boot_info.hhdm.offset = hhdm_request.response->offset;
+
+	/* acpi rsdp */
+	if (rsdp_request.response)
+		rk_boot_info.acpi.rsdp = (uint64_t)rsdp_request.response->address;
 
 	/* memory map */
 	if (memmap_request.response) {

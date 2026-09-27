@@ -11,7 +11,8 @@ ASFLAGS += -Ibuild/include
 
 LDFLAGS += -T kernel/linker.ld -ffreestanding -nostdlib -lgcc
 
-SOURCES += boot.c\
+SOURCES += acpi.c\
+	   boot.c\
 	   console.c\
 	   device.c\
 	   heap.c\
@@ -20,10 +21,12 @@ SOURCES += boot.c\
 	   meta.c\
 	   module.c\
 	   tty.c\
-	   util.c
+	   util.c\
+	   video.c
 
 BUILTIN_MODULES += test\
-		   tty/fbcon
+		   tty/fbcon\
+		   video/bootfb
 
 OBJECTS += $(BUILTIN_MODULES:%=build/root/usr/lib/rk/module/%.ko)
 OBJECTS += build/bakey.o

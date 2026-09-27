@@ -47,6 +47,10 @@ typedef struct rk_boot_info {
 	} hhdm;
 
 	struct {
+		uint64_t rsdp;
+	} acpi;
+
+	struct {
 		rk_boot_memory_map_t *entries;
 		size_t count;
 	} memory_map;

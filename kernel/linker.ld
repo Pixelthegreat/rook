@@ -33,6 +33,9 @@ SECTIONS {
 	.rk_meta ALIGN(4K) : {
 		_rk_meta_start = .;
 		*(.rk_meta)
+		*(.rk_meta.1)
+		*(.rk_meta.2)
+		*(.rk_meta.3)
 		_rk_meta_end = .;
 	} :rk_meta
 

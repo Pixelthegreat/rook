@@ -4,7 +4,13 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <limits.h>
 
 #define RK_ALIGN(x, sz) (((x) + ((sz)-1)) & ~((sz)-1))
+
+#define RK_MIN(x, y) ((x) < (y)? (x): (y))
+#define RK_MAX(x, y) ((x) > (y)? (x): (y))
+
+#define RK_ABS(x) ((x) < 0? -(x): (x))
 
 #endif /* ROOK_CORE_H */

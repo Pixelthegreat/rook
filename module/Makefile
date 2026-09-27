@@ -1,7 +1,8 @@
 include common.mk
 
 SUBDIRS += test\
-	   tty/fbcon
+	   tty/fbcon\
+	   video/bootfb
 
 include module/arch/$(ARCH)/Makefile
 

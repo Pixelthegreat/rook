@@ -42,4 +42,21 @@ typedef struct rk_video_framebuffer_attributes {
 	};
 } rk_video_framebuffer_attributes_t;
 
+/*
+ * Video mode description
+ */
+typedef struct rk_video_mode {
+	size_t width, height;
+	size_t depth;
+	uint64_t layout;
+} rk_video_mode_t;
+
+/*
+ * Output description
+ */
+typedef struct rk_video_output {
+	size_t id;
+	size_t width, height;
+} rk_video_output_t;
+
 #endif /* ROOK_COMMON_VIDEO_H */

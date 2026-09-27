@@ -1,13 +1,19 @@
 #include <rook/core.h>
 #include <rook/kernel/util.h>
+#include <rook/kernel/mmu.h>
+#include <rook/kernel/heap.h>
 #include <rook/kernel/console.h>
-#include <rook/kernel/boot.h>
 #include <rook/kernel/module.h>
+#include <rook/kernel/video.h>
 #include <rook/kernel/tty.h>
 
 #define BAKEY_CONFIG_IMPL
 #include <bakey-config.h>
 #include <bakey.h>
+
+static rk_device_t *video_device;
+static rk_video_framebuffer_attributes_t fb_attributes;
+static void *fb_data = NULL;
 
 static rk_tty_device_t tty;
 static rk_device_t *device = RK_DEVICE(&tty);
@@ -535,10 +541,7 @@ static uint8_t font_data[256 * 16] = {
 #define WIDTH 71
 #define HEIGHT 25
 
-static bakey_cell_t cells[WIDTH * HEIGHT];
-static bakey_display_t display = {
-	.cells = cells,
-};
+static bakey_display_t display;
 
 static bakey_result_t term_open(void);
 static size_t term_read(void *buffer, size_t count);
@@ -593,7 +596,13 @@ static void term_signal(bakey_control_character_t cc) {
 static void module_init(void);
 static void module_fini(void);
 
-RK_MODULE("fbcon", RK_MODULE_TYPE_NORMAL, module_init, module_fini);
+RK_MODULE(
+	"fbcon",
+	RK_MODULE_TYPE_NORMAL,
+	module_init,
+	module_fini,
+	RK_MODULE_PRIORITY_LOW
+);
 
 /* bakey color to pixel layout color */
 static void bc2pixel(bakey_color_t in, uint8_t *out, uint64_t layout) {
@@ -692,19 +701,19 @@ static void update_display(void) {
 
 			bc2pixel(
 				background, pixel_bg,
-				rk_boot_info.framebuffer.attributes.layout
+				fb_attributes.layout
 			);
 			bc2pixel(
 				foreground, pixel_fg,
-				rk_boot_info.framebuffer.attributes.layout
+				fb_attributes.layout
 			);
 
 			draw_character(
 				ch,
 				dx, dy,
-				(uint8_t *)rk_boot_info.framebuffer.virtual,
-				rk_boot_info.framebuffer.attributes.stride,
-				rk_boot_info.framebuffer.attributes.depth_bytes,
+				(uint8_t *)fb_data,
+				fb_attributes.stride,
+				fb_attributes.depth_bytes,
 				pixel_bg, pixel_fg
 			);
 		}
@@ -734,35 +743,84 @@ static size_t tty_write(rk_tty_device_t *_, const char *buffer, size_t count) {
 /* initialize module */
 static void module_init(void) {
 
-	if (!rk_boot_info.framebuffer.virtual) {
+	video_device = rk_device_class_video.first;
+	if (!video_device) {
 
-		rk_log_error("No framebuffer available");
+		rk_log_error("No video device available");
 		return;
 	}
-	if (rk_boot_info.framebuffer.attributes.model != RK_VIDEO_MODEL_RGB ||
-	    !rk_boot_info.framebuffer.attributes.layout) {
 
-		rk_log_error("Unsupported pixel layout");
+	/* determine mode for output */
+	rk_video_mode_t *modes;
+	rk_video_output_t *outputs;
+	size_t mode_count, output_count;
+
+	rk_video_device_get_modes(video_device, &modes, &mode_count);
+	rk_video_device_get_outputs(video_device, &outputs, &output_count);
+
+	if (!output_count) {
+
+		rk_log_error("No video outputs available");
 		return;
 	}
-	size_t width = rk_boot_info.framebuffer.attributes.width / 9;
-	size_t height = rk_boot_info.framebuffer.attributes.height / 16;
+	rk_video_mode_t *mode = rk_video_pick_mode_for_output(
+			outputs, modes, mode_count
+	);
+	if (!mode || !mode->layout) {
 
-	if (width < WIDTH || height < HEIGHT) {
-
-		rk_log_error("Terminal size %zux%zu too small", width, height);
+		rk_log_error("No appropriate or supported video mode available");
 		return;
 	}
-	width = WIDTH;
-	height = HEIGHT;
+	rk_log_debug(
+		"Output: device=%s, id=%zu",
+		video_device->name,
+		outputs->id
+	);
+	rk_log_debug(
+		"Mode: size=%zux%zu, depth=%zu, layout=%zu",
+		mode->width, mode->height,
+		mode->depth, mode->layout
+	);
+
+	/* map framebuffer */
+	if (!rk_video_device_configure_output(
+				video_device, outputs, mode
+	    )) {
+
+		rk_log_error("Can't configure video mode");
+		return;
+	}
+
+	void *fb_physical = rk_video_device_get_framebuffer_address(
+			video_device, outputs
+	);
+	rk_video_device_get_framebuffer_attributes(
+			video_device, outputs,
+			&fb_attributes
+	);
+
+	fb_data = rk_mmu_map(
+			NULL, fb_physical,
+			fb_attributes.width *
+			fb_attributes.height *
+			(mode->depth / 3),
+			0
+	);
+
+	/* determine terminal size */
+	size_t width = fb_attributes.width / 9;
+	size_t height = fb_attributes.height / 16;
 
 	display.width = width;
 	display.height = height;
+	display.cells = (bakey_cell_t *)malloc(
+			width * height * sizeof(bakey_cell_t)
+	);
 
 	rk_log_debug(
 		"Terminal: size=%zux%zu, layout=%llu",
 		width, height,
-		rk_boot_info.framebuffer.attributes.layout
+		fb_attributes.layout
 	);
 
 	/* open bakey context */
