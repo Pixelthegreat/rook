@@ -1,0 +1,115 @@
+diff --git a/config.sub b/config.sub
+index 38f3d037a..487d4afd2 100755
+--- a/config.sub
++++ b/config.sub
+@@ -1749,7 +1749,7 @@ case $os in
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+ 	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | zephyr* \
+-	     | fiwix* )
++	     | fiwix* | rook* )
+ 		;;
+ 	# This one is extra strict with allowed versions
+ 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)
+diff --git a/fixincludes/mkfixinc.sh b/fixincludes/mkfixinc.sh
+index df90720b7..ba524efa1 100755
+--- a/fixincludes/mkfixinc.sh
++++ b/fixincludes/mkfixinc.sh
+@@ -20,7 +20,8 @@ case $machine in
+     powerpcle-*-eabisim* | \
+     powerpcle-*-eabi* | \
+     *-*-vxworks7* | \
+-    *-musl* )
++    *-musl* | \
++    *-rook* | *-*-rook* )
+ 	#  IF there is no include fixing,
+ 	#  THEN create a no-op fixer and exit
+ 	(echo "#! /bin/sh" ; echo "exit 0" ) > ${target}
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index c5064dd37..b5518f664 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -1079,6 +1079,13 @@ case ${target} in
+       ;;
+   esac
+   ;;
++*-*-rook*)
++  extra_options="$extra_options gnu-user.opt"
++  gas=yes
++  gnu_ld=yes
++  default_use_cxa_atexit=yes
++  use_gcc_stdint=provide
++  ;;
+ *-*-elf|arc*-*-elf*)
+   # Assume that newlib is being used and so __cxa_atexit is provided.
+   default_use_cxa_atexit=yes
+@@ -2246,6 +2253,13 @@ x86_64-*-fuchsia*)
+ 	tmake_file="${tmake_file} i386/t-x86_64-elf"
+ 	tm_file="${tm_file} i386/unix.h i386/att.h elfos.h newlib-stdint.h i386/i386elf.h i386/x86-64.h fuchsia.h"
+ 	;;
++i[34567]86-*-rook*)
++	tm_file="${tm_file} i386/unix.h i386/att.h elfos.h glibc-stdint.h i386/i386elf.h rook.h gnu-user.h"
++	;;
++x86_64-*-rook*)
++	tmake_file="${tmake_file} i386/t-x86_64-rook"
++	tm_file="${tm_file} i386/unix.h i386/att.h elfos.h glibc-stdint.h i386/i386elf.h i386/x86-64.h rook.h gnu-user.h"
++	;;
+ ia64*-*-elf*)
+ 	tm_file="${tm_file} dbxelf.h elfos.h newlib-stdint.h ia64/sysv4.h ia64/elf.h"
+ 	tmake_file="ia64/t-ia64"
+diff --git a/gcc/config/i386/t-x86_64-rook b/gcc/config/i386/t-x86_64-rook
+new file mode 100644
+index 000000000..8223e63c0
+--- /dev/null
++++ b/gcc/config/i386/t-x86_64-rook
+@@ -0,0 +1,2 @@
++MULTILIB_OPTIONS += mno-red-zone
++MULTILIB_DIRNAMES += no-red-zone
+diff --git a/gcc/config/rook.h b/gcc/config/rook.h
+new file mode 100644
+index 000000000..b8db1d368
+--- /dev/null
++++ b/gcc/config/rook.h
+@@ -0,0 +1,23 @@
++#undef TARGET_ROOK
++#define TARGET_ROOK 1
++
++#undef LIB_SPEC
++#define LIB_SPEC "-lc -lsp_core"
++
++#undef STARTFILE_SPEC
++#define STARTFILE_SPEC "crt0.o%s crti.o%s crtbegin.o%s"
++
++#undef ENDFILE_SPEC
++#define ENDFILE_SPEC "crtend.o%s crtn.o%s"
++
++#undef TARGET_OS_CPP_BUILTINS
++#define TARGET_OS_CPP_BUILTINS() do {\
++		builtin_define("__rook__");\
++		builtin_define("__unix__");\
++		builtin_assert("system=rook");\
++		builtin_assert("system=unix");\
++		builtin_assert("system=posix");\
++	} while(0);
++
++#undef LINK_SPEC
++#define LINK_SPEC "%{shared:-shared} %{static:-static} %{!shared: %{!static: %{rdynamic:-export-dynamic}}} -z max-page-size=4096"
+diff --git a/libgcc/config.host b/libgcc/config.host
+index 8c56fcae5..b9d412a3a 100644
+--- a/libgcc/config.host
++++ b/libgcc/config.host
+@@ -900,6 +900,14 @@ x86_64-*-mingw*)
+ 		extra_parts="$extra_parts vtv_start.o vtv_end.o vtv_start_preinit.o vtv_end_preinit.o"
+ 	fi
+ 	;;
++i[34567]86-*-rook*)
++	extra_parts="$extra_parts ctri.o crtbegin.o crtend.o crtn.o"
++	tmake_file="$tmake_file i386/t-crtstuff t-crtstuff-pic t-libgcc-pic"
++	;;
++x86_64-*-rook*)
++	extra_parts="$extra_parts crti.o crtbegin.o crtend.o crtn.o"
++	tmake_file="$tmake_file i386/t-crtstuff t-crtstuff-pic t-libgcc-pic"
++	;;
+ ia64*-*-elf*)
+ 	extra_parts="$extra_parts crtbeginS.o crtendS.o crtfastmath.o"
+ 	tmake_file="ia64/t-ia64 ia64/t-ia64-elf ia64/t-eh-ia64 t-crtfm t-softfp-tf ia64/t-softfp t-softfp ia64/t-softfp-compat"

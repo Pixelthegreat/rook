@@ -1,0 +1,497 @@
+diff --git a/meson.build b/meson.build
+index 27d78ab1..b4ba6b0c 100644
+--- a/meson.build
++++ b/meson.build
+@@ -274,6 +274,8 @@ elif host_machine.system() == 'nyaux'
+ 	rtld_include_dirs += include_directories('sysdeps/nyaux/include')
+ 	libc_include_dirs += include_directories('sysdeps/nyaux/include')
+ 	subdir('sysdeps/nyaux')
++elif host_machine.system() == 'rook'
++	subdir('sysdeps/rook')
+ else
+ 	error('No sysdeps defined for OS: ' + host_machine.system())
+ endif
+diff --git a/sysdeps/rook/include/abi-bits/access.h b/sysdeps/rook/include/abi-bits/access.h
+new file mode 120000
+index 00000000..08a925e3
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/access.h
+@@ -0,0 +1 @@
++abis/linux/access.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/auxv.h b/sysdeps/rook/include/abi-bits/auxv.h
+new file mode 120000
+index 00000000..deba68c3
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/auxv.h
+@@ -0,0 +1 @@
++abis/linux/auxv.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/blkcnt_t.h b/sysdeps/rook/include/abi-bits/blkcnt_t.h
+new file mode 120000
+index 00000000..0c577a14
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/blkcnt_t.h
+@@ -0,0 +1 @@
++abis/linux/blkcnt_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/blksize_t.h b/sysdeps/rook/include/abi-bits/blksize_t.h
+new file mode 120000
+index 00000000..90a54db7
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/blksize_t.h
+@@ -0,0 +1 @@
++abis/linux/blksize_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/clockid_t.h b/sysdeps/rook/include/abi-bits/clockid_t.h
+new file mode 120000
+index 00000000..1f475078
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/clockid_t.h
+@@ -0,0 +1 @@
++abis/linux/clockid_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/dev_t.h b/sysdeps/rook/include/abi-bits/dev_t.h
+new file mode 120000
+index 00000000..f74a874f
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/dev_t.h
+@@ -0,0 +1 @@
++abis/linux/dev_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/epoll.h b/sysdeps/rook/include/abi-bits/epoll.h
+new file mode 120000
+index 00000000..0b0ebd14
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/epoll.h
+@@ -0,0 +1 @@
++abis/linux/epoll.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/errno.h b/sysdeps/rook/include/abi-bits/errno.h
+new file mode 120000
+index 00000000..43c0ef74
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/errno.h
+@@ -0,0 +1 @@
++abis/linux/errno.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/fcntl.h b/sysdeps/rook/include/abi-bits/fcntl.h
+new file mode 120000
+index 00000000..51a70488
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/fcntl.h
+@@ -0,0 +1 @@
++abis/linux/fcntl.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/fsblkcnt_t.h b/sysdeps/rook/include/abi-bits/fsblkcnt_t.h
+new file mode 120000
+index 00000000..3a2af1ed
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/fsblkcnt_t.h
+@@ -0,0 +1 @@
++abis/linux/fsblkcnt_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/fsfilcnt_t.h b/sysdeps/rook/include/abi-bits/fsfilcnt_t.h
+new file mode 120000
+index 00000000..adddaf10
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/fsfilcnt_t.h
+@@ -0,0 +1 @@
++abis/linux/fsfilcnt_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/gid_t.h b/sysdeps/rook/include/abi-bits/gid_t.h
+new file mode 120000
+index 00000000..c640b401
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/gid_t.h
+@@ -0,0 +1 @@
++abis/linux/gid_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/in.h b/sysdeps/rook/include/abi-bits/in.h
+new file mode 120000
+index 00000000..de06e662
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/in.h
+@@ -0,0 +1 @@
++abis/linux/in.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/ino_t.h b/sysdeps/rook/include/abi-bits/ino_t.h
+new file mode 120000
+index 00000000..f9eee05c
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/ino_t.h
+@@ -0,0 +1 @@
++abis/linux/ino_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/inotify.h b/sysdeps/rook/include/abi-bits/inotify.h
+new file mode 120000
+index 00000000..7b6d2159
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/inotify.h
+@@ -0,0 +1 @@
++abis/linux/inotify.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/ioctls.h b/sysdeps/rook/include/abi-bits/ioctls.h
+new file mode 120000
+index 00000000..474bb9eb
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/ioctls.h
+@@ -0,0 +1 @@
++abis/linux/ioctls.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/ipc.h b/sysdeps/rook/include/abi-bits/ipc.h
+new file mode 120000
+index 00000000..e0502be6
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/ipc.h
+@@ -0,0 +1 @@
++abis/linux/ipc.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/limits.h b/sysdeps/rook/include/abi-bits/limits.h
+new file mode 120000
+index 00000000..bd4f1de5
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/limits.h
+@@ -0,0 +1 @@
++abis/linux/limits.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/mode_t.h b/sysdeps/rook/include/abi-bits/mode_t.h
+new file mode 120000
+index 00000000..d071d4b0
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/mode_t.h
+@@ -0,0 +1 @@
++abis/linux/mode_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/mqueue.h b/sysdeps/rook/include/abi-bits/mqueue.h
+new file mode 120000
+index 00000000..4066a763
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/mqueue.h
+@@ -0,0 +1 @@
++abis/linux/mqueue.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/msg.h b/sysdeps/rook/include/abi-bits/msg.h
+new file mode 120000
+index 00000000..49ec78b9
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/msg.h
+@@ -0,0 +1 @@
++abis/linux/msg.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/nlink_t.h b/sysdeps/rook/include/abi-bits/nlink_t.h
+new file mode 120000
+index 00000000..ddbb8240
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/nlink_t.h
+@@ -0,0 +1 @@
++abis/linux/nlink_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/packet.h b/sysdeps/rook/include/abi-bits/packet.h
+new file mode 120000
+index 00000000..2669d4dc
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/packet.h
+@@ -0,0 +1 @@
++abis/linux/packet.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/pid_t.h b/sysdeps/rook/include/abi-bits/pid_t.h
+new file mode 120000
+index 00000000..e3d64535
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/pid_t.h
+@@ -0,0 +1 @@
++abis/linux/pid_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/poll.h b/sysdeps/rook/include/abi-bits/poll.h
+new file mode 120000
+index 00000000..484005d6
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/poll.h
+@@ -0,0 +1 @@
++abis/linux/poll.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/ptrace.h b/sysdeps/rook/include/abi-bits/ptrace.h
+new file mode 120000
+index 00000000..a14df45a
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/ptrace.h
+@@ -0,0 +1 @@
++abis/linux/ptrace.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/random.h b/sysdeps/rook/include/abi-bits/random.h
+new file mode 120000
+index 00000000..9774fe26
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/random.h
+@@ -0,0 +1 @@
++abis/linux/random.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/reboot.h b/sysdeps/rook/include/abi-bits/reboot.h
+new file mode 120000
+index 00000000..c00d681c
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/reboot.h
+@@ -0,0 +1 @@
++abis/linux/reboot.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/resource.h b/sysdeps/rook/include/abi-bits/resource.h
+new file mode 120000
+index 00000000..10cbca42
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/resource.h
+@@ -0,0 +1 @@
++abis/linux/resource.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/riscv-hwprobe.h b/sysdeps/rook/include/abi-bits/riscv-hwprobe.h
+new file mode 120000
+index 00000000..f9ce6cfd
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/riscv-hwprobe.h
+@@ -0,0 +1 @@
++abis/linux/riscv-hwprobe.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/rlim_t.h b/sysdeps/rook/include/abi-bits/rlim_t.h
+new file mode 120000
+index 00000000..135114e1
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/rlim_t.h
+@@ -0,0 +1 @@
++abis/linux/rlim_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/seek-whence.h b/sysdeps/rook/include/abi-bits/seek-whence.h
+new file mode 120000
+index 00000000..af426369
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/seek-whence.h
+@@ -0,0 +1 @@
++abis/linux/seek-whence.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/shm.h b/sysdeps/rook/include/abi-bits/shm.h
+new file mode 120000
+index 00000000..fe2e1369
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/shm.h
+@@ -0,0 +1 @@
++abis/linux/shm.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/sigevent.h b/sysdeps/rook/include/abi-bits/sigevent.h
+new file mode 120000
+index 00000000..fd593df5
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/sigevent.h
+@@ -0,0 +1 @@
++abis/linux/sigevent.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/signal.h b/sysdeps/rook/include/abi-bits/signal.h
+new file mode 120000
+index 00000000..9f5caca4
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/signal.h
+@@ -0,0 +1 @@
++abis/linux/signal.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/sigval.h b/sysdeps/rook/include/abi-bits/sigval.h
+new file mode 120000
+index 00000000..6d469b7c
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/sigval.h
+@@ -0,0 +1 @@
++abis/linux/sigval.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/socket.h b/sysdeps/rook/include/abi-bits/socket.h
+new file mode 120000
+index 00000000..03dd44dd
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/socket.h
+@@ -0,0 +1 @@
++abis/linux/socket.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/socklen_t.h b/sysdeps/rook/include/abi-bits/socklen_t.h
+new file mode 120000
+index 00000000..49fbc8c8
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/socklen_t.h
+@@ -0,0 +1 @@
++abis/linux/socklen_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/stat.h b/sysdeps/rook/include/abi-bits/stat.h
+new file mode 120000
+index 00000000..5e0729e1
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/stat.h
+@@ -0,0 +1 @@
++abis/linux/stat.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/statfs.h b/sysdeps/rook/include/abi-bits/statfs.h
+new file mode 120000
+index 00000000..24c8054f
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/statfs.h
+@@ -0,0 +1 @@
++abis/linux/statfs.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/statvfs.h b/sysdeps/rook/include/abi-bits/statvfs.h
+new file mode 120000
+index 00000000..8a51e232
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/statvfs.h
+@@ -0,0 +1 @@
++abis/linux/statvfs.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/statx.h b/sysdeps/rook/include/abi-bits/statx.h
+new file mode 120000
+index 00000000..d46a29d9
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/statx.h
+@@ -0,0 +1 @@
++abis/linux/statx.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/suseconds_t.h b/sysdeps/rook/include/abi-bits/suseconds_t.h
+new file mode 120000
+index 00000000..2aaf4c37
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/suseconds_t.h
+@@ -0,0 +1 @@
++abis/linux/suseconds_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/termios.h b/sysdeps/rook/include/abi-bits/termios.h
+new file mode 120000
+index 00000000..4599bd04
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/termios.h
+@@ -0,0 +1 @@
++abis/linux/termios.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/time.h b/sysdeps/rook/include/abi-bits/time.h
+new file mode 120000
+index 00000000..8ef5505d
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/time.h
+@@ -0,0 +1 @@
++abis/linux/time.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/uid_t.h b/sysdeps/rook/include/abi-bits/uid_t.h
+new file mode 120000
+index 00000000..9b67d3bc
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/uid_t.h
+@@ -0,0 +1 @@
++abis/linux/uid_t.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/utmp-defines.h b/sysdeps/rook/include/abi-bits/utmp-defines.h
+new file mode 120000
+index 00000000..c09a519d
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/utmp-defines.h
+@@ -0,0 +1 @@
++abis/linux/utmp-defines.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/utmpx.h b/sysdeps/rook/include/abi-bits/utmpx.h
+new file mode 120000
+index 00000000..e167a1b8
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/utmpx.h
+@@ -0,0 +1 @@
++abis/linux/utmpx.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/utsname.h b/sysdeps/rook/include/abi-bits/utsname.h
+new file mode 120000
+index 00000000..bd2c3f6b
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/utsname.h
+@@ -0,0 +1 @@
++abis/linux/utsname.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/vm-flags.h b/sysdeps/rook/include/abi-bits/vm-flags.h
+new file mode 120000
+index 00000000..5d7c372f
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/vm-flags.h
+@@ -0,0 +1 @@
++abis/linux/vm-flags.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/vt.h b/sysdeps/rook/include/abi-bits/vt.h
+new file mode 120000
+index 00000000..2fc84527
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/vt.h
+@@ -0,0 +1 @@
++abis/linux/vt.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/wait.h b/sysdeps/rook/include/abi-bits/wait.h
+new file mode 120000
+index 00000000..8c60d5e5
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/wait.h
+@@ -0,0 +1 @@
++abis/linux/wait.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/include/abi-bits/xattr.h b/sysdeps/rook/include/abi-bits/xattr.h
+new file mode 120000
+index 00000000..1f0a1493
+--- /dev/null
++++ b/sysdeps/rook/include/abi-bits/xattr.h
+@@ -0,0 +1 @@
++abis/linux/xattr.h
+\ No newline at end of file
+diff --git a/sysdeps/rook/meson.build b/sysdeps/rook/meson.build
+new file mode 100644
+index 00000000..8edbaeff
+--- /dev/null
++++ b/sysdeps/rook/meson.build
+@@ -0,0 +1,54 @@
++if not no_headers
++	install_headers(
++		'include/abi-bits/auxv.h',
++		'include/abi-bits/blkcnt_t.h',
++		'include/abi-bits/blksize_t.h',
++		'include/abi-bits/clockid_t.h',
++		'include/abi-bits/dev_t.h',
++		'include/abi-bits/errno.h',
++		'include/abi-bits/fcntl.h',
++		'include/abi-bits/gid_t.h',
++		'include/abi-bits/ino_t.h',
++		'include/abi-bits/limits.h',
++		'include/abi-bits/mode_t.h',
++		'include/abi-bits/nlink_t.h',
++		'include/abi-bits/pid_t.h',
++		'include/abi-bits/seek-whence.h',
++		'include/abi-bits/signal.h',
++		'include/abi-bits/stat.h',
++		'include/abi-bits/uid_t.h',
++		'include/abi-bits/vm-flags.h',
++		'include/abi-bits/wait.h',
++		'include/abi-bits/riscv-hwprobe.h',
++		'include/abi-bits/sigevent.h',
++		'include/abi-bits/sigval.h',
++		'include/abi-bits/sa_family_t.h',
++		'include/abi-bits/sockaddr_storage.h',
++		'include/abi-bits/sig-limits.h',
++		'include/abi-bits/suseconds_t.h',
++		'include/abi-bits/access.h',
++		'include/abi-bits/socklen_t.h',
++		'include/abi-bits/socket.h',
++		'include/abi-bits/poll.h',
++		'include/abi-bits/resource.h',
++		'include/abi-bits/in.h',
++		'include/abi-bits/rlim_t.h',
++		'include/abi-bits/utsname.h',
++		'include/abi-bits/fd_set.h',
++		'include/abi-bits/sem.h',
++		'include/abi-bits/time.h',
++		'include/abi-bits/ipc.h',
++		'include/abi-bits/statvfs.h',
++		'include/abi-bits/fsblkcnt_t.h',
++		'include/abi-bits/fsfilcnt_t.h',
++		'include/abi-bits/shm.h',
++		'include/abi-bits/termios.h',
++		'include/abi-bits/msg.h',
++		'include/abi-bits/mqueue.h',
++		'include/abi-bits/utmp-defines.h',
++		'include/abi-bits/utmpx.h',
++		'include/abi-bits/sigset_t.h',
++		subdir: 'abi-bits',
++		follow_symlinks: true
++	)
++endif

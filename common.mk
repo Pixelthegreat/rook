@@ -1,6 +1,6 @@
 -include config.mk
 
-TOOLCHAIN ?= x86_64-elf
+TOOLCHAIN ?= x86_64-rook
 ARCH ?= x86_64
 
 CC=$(TOOLCHAIN)-gcc

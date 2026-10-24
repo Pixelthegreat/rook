@@ -26,6 +26,7 @@ clean:
 
 defconfig:
 	@cp -v config.def.mk config.mk
+	@sed -i "s/@HOME/$(subst /,\\/,$(HOME))/g" config.mk
 
 run: run_limine_x86_64
 

@@ -1,0 +1,14 @@
+[binaries]
+c = 'x86_64-rook-gcc'
+cpp = 'x86_64-rook-g++'
+ar = 'x86_64-rook-ar'
+strip = 'x86_64-rook-strip'
+ld = 'x86_64-rook-ld'
+
+[build_machine]
+system = 'rook'
+subsystem = 'rook'
+kernel = 'rook'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
