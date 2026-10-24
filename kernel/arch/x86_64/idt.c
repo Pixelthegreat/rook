@@ -1,4 +1,5 @@
 #include <rook/core.h>
+#include <rook/kernel/util.h>
 #include <rook/kernel/console.h>
 #include <rook/kernel/arch/x86_64/gdt.h>
 #include <rook/kernel/arch/x86_64/idt.h>
@@ -156,12 +157,12 @@ extern void rk_idt_set_gate(uint64_t index, void *procedure, uint8_t type) {
 
 	uint64_t offset = (uint64_t)procedure;
 
-	idt[index].offset_low = (uint16_t)(offset & 0xFFFF);
+	idt[index].offset_low = (uint16_t)(offset & 0xffff);
 	idt[index].selector = RK_GDT_INDEX(RK_GDT_ENTRY_KERNEL_CODE);
 	idt[index].ist_rsvd = 0;
 	idt[index].flags = RK_IDT_GATE_P | type;
-	idt[index].offset_mid = (uint16_t)((offset >> 16) & 0xFFFF);
-	idt[index].offset_high = (uint32_t)((offset >> 32) & 0xFFFFFFFF);
+	idt[index].offset_mid = (uint16_t)((offset >> 16) & 0xffff);
+	idt[index].offset_high = (uint32_t)((offset >> 32) & 0xffffffff);
 	idt[index].rsvd = 0;
 }
 
@@ -192,4 +193,31 @@ extern void rk_idt_set_handler(uint64_t index, rk_idt_handler_t handler) {
 	if (index >= MAX_INTERRUPTS)
 		return;
 	handlers[index] = handler;
+}
+
+/* print panic context */
+static char panic_buffer[1024];
+
+extern void rk_print_panic_context(void *context) {
+
+	rk_idt_registers_t *registers = (rk_idt_registers_t *)context;
+
+	snprintf(
+		panic_buffer, sizeof(panic_buffer),
+		"  \e[41m\e[91mRDI   =0x%16llx  RSI    =0x%16llx\e[49m\e[39m\n"
+		"  \e[41m\e[91mRBP   =0x%16llx  RSP    =0x%16llx\e[49m\e[39m\n"
+		"  \e[41m\e[91mRDX   =0x%16llx  RCX    =0x%16llx\e[49m\e[39m\n"
+		"  \e[41m\e[91mRBX   =0x%16llx  RAX    =0x%16llx\e[49m\e[39m\n"
+		"  \e[41m\e[91mRIP   =0x%16llx  CS     =0x%16llx\e[49m\e[39m\n"
+		"  \e[41m\e[91mRFLAGS=0x%16llx  USERRSP=0x%16llx\e[49m\e[39m\n"
+		"  \e[41m\e[91mSS    =0x%16llx  DS     =0x%16llx\e[49m\e[39m\n",
+		registers->rdi, registers->rsi,
+		registers->rbp, registers->rsp,
+		registers->rdx, registers->rcx,
+		registers->rbx, registers->rax,
+		registers->rip, registers->cs,
+		registers->rflags, registers->userrsp,
+		registers->ss, registers->ds
+	);
+	rk_console_prints(panic_buffer);
 }

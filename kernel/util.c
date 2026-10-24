@@ -238,10 +238,12 @@ static void handler_x(struct buffer_info *buffer, va_list args, int modifier, in
 		case L: v = (unsigned long long)(va_arg(args, unsigned long)); break;
 		case LL: v = va_arg(args, unsigned long long); break;
 		case Z: v = (unsigned long long)va_arg(args, size_t); break;
+		case P: v = (unsigned long long)va_arg(args, void *); break;
 		default: v = 0;
 	}
 	if (!v) {
-		add_char(buffer, '0');
+		for (int i = 0; i < (number? number: 1); i++)
+			add_char(buffer, '0');
 		return;
 	}
 	char mbuf[64];

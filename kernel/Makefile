@@ -9,11 +9,12 @@ CFLAGS += -Ibuild/include -Ibuild/limine-protocol/include -Ibuild/bakey/include 
 ASFLAGS += -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC
 ASFLAGS += -Ibuild/include
 
-LDFLAGS += -T kernel/linker.ld -ffreestanding -nostdlib -lgcc
+LDFLAGS += -g -T kernel/linker.ld -ffreestanding -nostdlib -lgcc
 
 SOURCES += acpi.c\
 	   boot.c\
 	   console.c\
+	   cpu.c\
 	   device.c\
 	   heap.c\
 	   limine.c\

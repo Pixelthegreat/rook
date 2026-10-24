@@ -37,8 +37,8 @@ RK_MODULE(
 /* write to tty */
 static void putc_tty(char c) {
 
-	for (int i = 0; !(isa_inb(PORT+LSR) & 0x20) && i < 65535; i++);
-	isa_outb(PORT+THR, (uint8_t)c);
+	for (int i = 0; !(rk_isa_inb(PORT+LSR) & 0x20) && i < 65535; i++);
+	rk_isa_outb(PORT+THR, (uint8_t)c);
 
 	if (c == '\n') putc_tty('\r');
 }
@@ -61,15 +61,15 @@ static void module_init(void) {
 			&rk_device_class_tty
 	);
 
-	isa_outb(PORT+FCR, 0);
-	isa_outb(PORT+LCR, 0x80);
-	isa_outb(PORT+DLL, 12);
-	isa_outb(PORT+DLH, 0);
-	isa_outb(PORT+LCR, 0x03);
-	isa_outb(PORT+MCR, 0);
-	isa_outb(PORT+IER, 1);
+	rk_isa_outb(PORT+FCR, 0);
+	rk_isa_outb(PORT+LCR, 0x80);
+	rk_isa_outb(PORT+DLL, 12);
+	rk_isa_outb(PORT+DLH, 0);
+	rk_isa_outb(PORT+LCR, 0x03);
+	rk_isa_outb(PORT+MCR, 0);
+	rk_isa_outb(PORT+IER, 1);
 
-	isa_inb(PORT+LSR);
+	rk_isa_inb(PORT+LSR);
 }
 
 /* deinitialize module */

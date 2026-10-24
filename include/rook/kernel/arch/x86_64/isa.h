@@ -6,7 +6,7 @@
 /*
  * Read and write bytes through isa ports
  */
-extern void isa_outb(uint16_t address, uint8_t value);
-extern uint8_t isa_inb(uint16_t address);
+extern void rk_isa_outb(uint16_t address, uint8_t value);
+extern uint8_t rk_isa_inb(uint16_t address);
 
 #endif /* ROOK_KERNEL_ARCH_X86_64_ISA_H */

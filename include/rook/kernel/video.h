@@ -29,7 +29,6 @@ typedef struct rk_video_device {
 	/*
 	 * Get current mode for output
 	 */
-
 	void (*get_output_mode)(
 			struct rk_video_device *device,
 			rk_video_output_t *output,

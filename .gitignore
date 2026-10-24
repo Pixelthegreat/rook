@@ -1,6 +1,7 @@
 # Build files #
 /build
 /config.mk
+**__pycache__
 
 # Miscellaneous #
 /notes

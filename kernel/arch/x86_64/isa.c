@@ -2,13 +2,13 @@
 #include <rook/kernel/arch/x86_64/isa.h>
 
 /* write byte to isa port */
-extern void isa_outb(uint16_t address, uint8_t value) {
+extern void rk_isa_outb(uint16_t address, uint8_t value) {
 
 	asm volatile("outb %%al, %%dx": : "a"(value), "d"(address));
 }
 
 /* read byte from isa port */
-extern uint8_t isa_inb(uint16_t address) {
+extern uint8_t rk_isa_inb(uint16_t address) {
 
 	uint8_t value;
 	asm volatile("inb %%dx, %%al": "=a"(value): "d"(address));

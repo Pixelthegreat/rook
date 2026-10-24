@@ -10,6 +10,12 @@ PHDRS {
 	data PT_LOAD;
 
 	rk_meta PT_LOAD;
+
+	/* x86_64 stuff */
+#if RK_CONFIG_ARCH == x86_64
+	ap_bootstrap PT_LOAD;
+	signal_bootstrap PT_LOAD;
+#endif
 }
 
 SECTIONS {
@@ -38,6 +44,13 @@ SECTIONS {
 		*(.rk_meta.3)
 		_rk_meta_end = .;
 	} :rk_meta
+
+	/* x86_64 stuff */
+#if RK_CONFIG_ARCH == x86_64
+	_rk_ap_start = ALIGN(4K);
+	.data.ap ALIGN(4K) : { *(.data.ap) } :ap_bootstrap
+	_rk_ap_end = ALIGN(4K);
+#endif
 
 	_rk_end = .;
 

@@ -1,5 +1,6 @@
 #include <rook/core.h>
 #include <rook/kernel/util.h>
+#include <rook/kernel/lock.h>
 #include <rook/kernel/boot.h>
 #include <rook/kernel/device.h>
 #include <rook/kernel/tty.h>
@@ -13,6 +14,8 @@ static char buffer_b[1024];
 
 static char backlog[0x8000] = "====\n";
 static size_t backlog_start = 0, backlog_end = 5;
+
+static rk_spinlock_t lock;
 
 /* add to backlog */
 static void add_backlog(const char *message) {
@@ -84,6 +87,8 @@ extern void rk_logv(
 		const char *format,
 		va_list args
 ) {
+	rk_spinlock_acquire(&lock);
+
 	switch (level) {
 		case RK_LOG_LEVEL_DEBUG:
 			snprintf(
@@ -138,6 +143,8 @@ extern void rk_logv(
 	add_backlog(buffer_a);
 	add_backlog(buffer_b);
 	add_backlog("\e[39m\e[49m\n");
+
+	rk_spinlock_release(&lock);
 }
 
 /* log message */
@@ -164,8 +171,19 @@ extern void rk_panic_long(
 		const char *format,
 		...
 ) {
-	rk_log(RK_LOG_LEVEL_FATAL, path, line, module_name, format);
+	va_list args;
+	va_start(args, format);
+
+	rk_logv(
+		RK_LOG_LEVEL_FATAL,
+		path, line,
+		module_name, format,
+		args
+	);
+	va_end(args);
+
+	if (context) rk_print_panic_context(context);
 
 	asm volatile("cli");
-	while (1) asm volatile("hlt");
+	while (1) asm volatile("hlt"); /* TODO: halt */
 }

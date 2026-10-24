@@ -1,5 +1,6 @@
 #include <rook/core.h>
 #include <rook/kernel/util.h>
+#include <rook/kernel/heap.h>
 #include <rook/kernel/device.h>
 
 /* get device from class by name */
@@ -14,6 +15,24 @@ extern rk_device_t *rk_device_lookup(
 			return device;
 	}
 	return NULL;
+}
+
+/* create device */
+extern rk_device_t *rk_device_create(
+		const char *name,
+		const char *description,
+		rk_device_class_t *class
+) {
+	rk_device_t *device = (rk_device_t *)malloc(class->size);
+	memset(device, 0, class->size);
+
+	rk_device_register(
+			device,
+			name,
+			description,
+			class
+	);
+	return device;
 }
 
 /* register device */

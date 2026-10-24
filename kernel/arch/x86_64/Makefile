@@ -1,6 +1,8 @@
 CFLAGS += -mno-red-zone -mcmodel=kernel
 
-SOURCES += arch/x86_64/entry.s\
+SOURCES += arch/x86_64/ap.s\
+	   arch/x86_64/cpu.c\
+	   arch/x86_64/entry.s\
 	   arch/x86_64/gdt.c\
 	   arch/x86_64/idt.c\
 	   arch/x86_64/idta.s\

@@ -31,6 +31,7 @@ extern uint64_t _rk_end;
 
 uint64_t rk_mmu_page_size = PAGE_SIZE;
 uint64_t rk_mmu_breakpoint = 0xFFFFFFFF00000000;
+uint64_t rk_mmu_main_cr3;
 
 /* physical memory range / usage maps */
 #define RANGE_SIZE 0x100000 /* 4G in frames */
@@ -73,8 +74,6 @@ static uint64_t *page_wrap[4] = {
 	(uint64_t *)PAGE_WRAP_ADDR_L4,
 };
 static rk_spinlock_t frame_lock;
-
-static uint64_t main_cr3;
 
 static bool init_mmu = false;
 
@@ -131,7 +130,7 @@ extern void rk_mmu_init(void) {
 
 	rk_spinlock_init(&frame_lock);
 
-	asm volatile("movq %%cr3, %0": "=r"(main_cr3));
+	asm volatile("movq %%cr3, %0": "=r"(rk_mmu_main_cr3));
 
 	/* process memory map */
 	base.used_count = RANGE_SIZE;
@@ -170,7 +169,7 @@ extern void rk_mmu_init(void) {
 	uint64_t n_pt2 = (n_table >> 30) & 0x1ff;
 	uint64_t n_pt3 = (n_table >> 39) & 0x1ff;
 
-	uint64_t *pt4 = (uint64_t *)(rk_boot_info.hhdm.offset + main_cr3);
+	uint64_t *pt4 = (uint64_t *)(rk_boot_info.hhdm.offset + rk_mmu_main_cr3);
 	uint64_t *pt3 = (uint64_t *)(PAGE_ADDR(pt4[n_pt3]) + rk_boot_info.hhdm.offset);
 	uint64_t *pt2 = (uint64_t *)(PAGE_ADDR(pt3[n_pt2]) + rk_boot_info.hhdm.offset);
 	uint64_t *pt1 = (uint64_t *)(PAGE_ADDR(pt2[n_pt1]) + rk_boot_info.hhdm.offset);
@@ -178,13 +177,13 @@ extern void rk_mmu_init(void) {
 	uint64_t address = PAGE_ADDR(pt1[n_page]);
 	spare_table_base = address;
 
-	copy_table(rk_boot_info.hhdm.offset, main_cr3, new_table, 3, 0);
+	copy_table(rk_boot_info.hhdm.offset, rk_mmu_main_cr3, new_table, 3, 0);
 
 	new_table[PAGE_WRAP_INDEX] = address | PAGE_P | PAGE_RW;
 
 	/* load cr3 */
 	asm volatile("mov %0, %%cr3": : "r"(address));
-	main_cr3 = address;
+	rk_mmu_main_cr3 = address;
 
 	rk_log_debug("Blink twice if you see this");
 
