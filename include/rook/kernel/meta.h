@@ -1,3 +1,8 @@
+/*
+ * Copyright 2026, Elliot Kohlmyer
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 #ifndef ROOK_KERNEL_META_H
 #define ROOK_KERNEL_META_H
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2026, Elliot Kohlmyer
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 #include <rook/core.h>
 #include <rook/kernel/util.h>
 #include <rook/kernel/heap.h>

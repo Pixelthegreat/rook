@@ -1,3 +1,8 @@
+/*
+ * Copyright 2026, Elliot Kohlmyer
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 .globl rk_isr0
 .globl rk_isr1
 .globl rk_isr2

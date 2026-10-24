@@ -1,3 +1,8 @@
+/*
+ * Copyright 2026, Elliot Kohlmyer
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 #ifndef ROOK_COMMON_VIDEO_H
 #define ROOK_COMMON_VIDEO_H
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2026, Elliot Kohlmyer
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 #include <limine.h>
 #include <rook/core.h>
 #include <rook/kernel/util.h>
